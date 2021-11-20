@@ -1,0 +1,9 @@
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 80px;
+
+  &Item {
+    width: 25%;
+  }
+}
