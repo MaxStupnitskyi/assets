@@ -8,6 +8,7 @@ import styles from './App.module.scss';
 const App = () => {
 
   const [data, setData] = useState(null);
+  const [coinsPrice, setCoinsPrice] = useState({});
 
   const handleFile = (file) => {
     const reader = new FileReader();
@@ -22,7 +23,6 @@ const App = () => {
       /* Convert array of arrays */
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
       .filter(row => row.includes('BUY') || row.includes('SELL'));
-      // console.log(data);
 
       const coins = Array.from(new Set(data.map(item => item[1])));
 
@@ -49,8 +49,20 @@ const App = () => {
   };
 
   useEffect(() => {
-    
-  }, [])
+    data && Object.keys(data).forEach(async coin => {
+      try {
+        await fetch(`https://api1.binance.com/api/v3/ticker/price?symbol=${coin}`)
+        .then(response => response.json())
+        .then(({ symbol, price }) => setCoinsPrice(prevState => ({ ...prevState, [symbol]: price })));
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }, [data]);
+
+  useEffect(() => {
+    console.log(coinsPrice);
+  }, [coinsPrice]);
 
   const TableBlock = () => {
     return Object.keys(data).map(coin => (
@@ -77,17 +89,18 @@ const App = () => {
               <td>{row[4]}</td>
               <td>{parseFloat(Number(row[5]).toFixed(5))}</td>
               <td>{row[7]}</td>
-              <td></td>
-              <td></td>
+              <td />
+              <td />
             </tr>
           ))}
           <tr className={styles.totalRow}>
             <td>Total</td>
-            <td></td>
+            <td />
             <td>{parseFloat(data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[4] : reducer - +row[4], 0).toFixed(5))}</td>
             <td>{(data[coin].reduce((reducer, row) => reducer + +row[5], 0)) / data[coin].length}</td>
             <td>{data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[7] : reducer - +row[7], 0).toFixed(2)}</td>
-            <td></td>
+            <td>{coinsPrice[coin]}</td>
+            <td>{(coinsPrice[coin] * data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[4] : reducer - +row[4], 0)).toFixed(2)}</td>
           </tr>
           </tbody>
         </Table>
