@@ -1,0 +1,60 @@
+table {
+  td, th {
+    &:first-child {
+      width: 240px;
+    }
+
+    &:nth-child(2) {
+      width: 100px;
+    }
+
+    &:nth-child(3) {
+      width: 170px;
+    }
+
+    &:nth-child(4) {
+      width: 150px;
+    }
+
+    &:nth-child(5) {
+      width: 130px;
+    }
+
+    &:nth-child(6) {
+      width: 130px;
+    }
+
+    &:nth-child(7) {
+      width: 150px;
+    }
+
+    &:nth-child(8) {
+      width: 150px;
+    }
+
+    &:nth-child(9) {
+      width: 100px;
+    }
+
+
+  }
+}
+
+.title th {
+  background-color: #24968c;
+}
+
+.header th {
+  background-color: #145751;
+}
+
+.totalRow {
+
+  &.positive td {
+    background-color: #328321;
+  }
+
+  &.negative td {
+    background-color: #e30606;
+  }
+}

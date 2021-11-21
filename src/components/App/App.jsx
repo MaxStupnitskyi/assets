@@ -1,14 +1,29 @@
 import { useEffect, useState } from 'react';
-import { Container, Table } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import XLSX from 'xlsx';
+
+import TableBlock from '../TableBlock';
+import TotalTable from '../TotalTable';
 
 import styles from './App.module.scss';
 
 const App = () => {
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
   const [coinsPrice, setCoinsPrice] = useState({});
+
+  const fetchRates = () => {
+    data && Object.keys(data).forEach(async coin => {
+      try {
+        await fetch(`https://api1.binance.com/api/v3/ticker/price?symbol=${coin}`)
+        .then(response => response.json())
+        .then(({ symbol, price }) => setCoinsPrice(prevState => ({ ...prevState, [symbol]: price })));
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }
 
   const handleFile = (file) => {
     const reader = new FileReader();
@@ -32,9 +47,8 @@ const App = () => {
         results[coin] = data.filter(item => item[1] === coin);
       });
 
-      console.log(results);
-
       setData(results);
+      localStorage.setItem('data', JSON.stringify(results));
     };
     if (rABS) {
       reader.readAsBinaryString(file);
@@ -49,70 +63,21 @@ const App = () => {
   };
 
   useEffect(() => {
-    data && Object.keys(data).forEach(async coin => {
-      try {
-        await fetch(`https://api1.binance.com/api/v3/ticker/price?symbol=${coin}`)
-        .then(response => response.json())
-        .then(({ symbol, price }) => setCoinsPrice(prevState => ({ ...prevState, [symbol]: price })));
-      } catch (e) {
-        console.error(e);
-      }
-    });
+    fetchRates();
+    const timerId = setInterval(() => {
+      fetchRates()
+    }, 10000);
+
+    return () => clearInterval(timerId);
+
   }, [data]);
-
-  useEffect(() => {
-    console.log(coinsPrice);
-  }, [coinsPrice]);
-
-  const TableBlock = () => {
-    return Object.keys(data).map(coin => (
-        <Table key={coin} variant='dark'>
-          <thead>
-          <tr className={styles.title}>
-            <th colSpan='7'>{coin.slice(0, -4)}</th>
-          </tr>
-          <tr className={styles.header}>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Order Amount</th>
-            <th>Price</th>
-            <th>Total Spend</th>
-            <th>Current Price</th>
-            <th>Current Value</th>
-          </tr>
-          </thead>
-          <tbody>
-          {data[coin].map(row => (
-            <tr key={row[0]}>
-              <td>{row[0]}</td>
-              <td>{row[2]}</td>
-              <td>{row[4]}</td>
-              <td>{parseFloat(Number(row[5]).toFixed(5))}</td>
-              <td>{row[7]}</td>
-              <td />
-              <td />
-            </tr>
-          ))}
-          <tr className={styles.totalRow}>
-            <td>Total</td>
-            <td />
-            <td>{parseFloat(data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[4] : reducer - +row[4], 0).toFixed(5))}</td>
-            <td>{(data[coin].reduce((reducer, row) => reducer + +row[5], 0)) / data[coin].length}</td>
-            <td>{data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[7] : reducer - +row[7], 0).toFixed(2)}</td>
-            <td>{coinsPrice[coin]}</td>
-            <td>{(coinsPrice[coin] * data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[4] : reducer - +row[4], 0)).toFixed(2)}</td>
-          </tr>
-          </tbody>
-        </Table>
-      )
-    );
-  };
 
   return (
     <div className={styles.app}>
       <Container>
         <input onChange={(e) => handleChange(e)} type='file' />
-        {data && <TableBlock />}
+        {data && <TableBlock data={data} coinsPrice={coinsPrice} />}
+        {data && <TotalTable />}
       </Container>
     </div>
   );
