@@ -1,0 +1,25 @@
+.app {
+  //background-color: #262626;
+  //color: #fff;
+  min-height: 100vh;
+}
+
+table {
+  td, th {
+    &:first-child {
+      width: 25%;
+    }
+  }
+}
+
+.title th {
+  background-color: #24968c;
+}
+
+.header th {
+  background-color: #145751;
+}
+
+.totalRow td {
+  background-color: #328321;
+}
