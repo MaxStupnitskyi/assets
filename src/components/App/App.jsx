@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import XLSX from 'xlsx';
+import { RecoilRoot } from 'recoil';
 
 import TableBlock from '../TableBlock';
 import TotalTable from '../TotalTable';
@@ -23,7 +24,7 @@ const App = () => {
         console.error(e);
       }
     });
-  }
+  };
 
   const handleFile = (file) => {
     const reader = new FileReader();
@@ -65,7 +66,7 @@ const App = () => {
   useEffect(() => {
     fetchRates();
     const timerId = setInterval(() => {
-      fetchRates()
+      fetchRates();
     }, 10000);
 
     return () => clearInterval(timerId);
@@ -73,13 +74,15 @@ const App = () => {
   }, [data]);
 
   return (
-    <div className={styles.app}>
-      <Container>
-        <input onChange={(e) => handleChange(e)} type='file' />
-        {data && <TableBlock data={data} coinsPrice={coinsPrice} />}
-        {data && <TotalTable />}
-      </Container>
-    </div>
+    <RecoilRoot>
+      <div className={styles.app}>
+        <Container>
+          <input className={styles.input} onChange={(e) => handleChange(e)} type='file' />
+          {data && <TotalTable data={data} coinsPrice={coinsPrice} />}
+          {data && <TableBlock data={data} coinsPrice={coinsPrice} />}
+        </Container>
+      </div>
+    </RecoilRoot>
   );
 };
 

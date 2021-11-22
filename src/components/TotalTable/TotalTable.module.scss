@@ -1,0 +1,23 @@
+.table {
+  min-width: 450px;
+
+  td, th {
+    width: 150px;
+  }
+}
+
+.titleRow {
+  background-color: #d0bf03;
+}
+
+.totalRow {
+  color: #fff;
+
+  &.positive td {
+    background-color: #328321;
+  }
+
+  &.negative td {
+    background-color: #e30606;
+  }
+}

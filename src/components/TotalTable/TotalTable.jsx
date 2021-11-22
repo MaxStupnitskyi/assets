@@ -1,23 +1,40 @@
 import { Table } from 'react-bootstrap';
+import { useState } from 'react';
+
+import fixedNum from '../../helpers/fixedNum';
 
 import styles from './TotalTable.module.scss';
+import classNames from 'classnames';
 
-const TotalTable = () => (<Table>
-    <thead>
-    <tr>
-      <th>Total Spend</th>
-      <th>Current Value</th>
-      <th>Diff</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    </tbody>
-  </Table>
-);
+const TotalTable = ({ data, coinsPrice }) => {
+
+  const total = Object.keys(data).reduce((reducer, coin) => {
+    return reducer + fixedNum(data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[7] : reducer - +row[7], 0), 2);
+  }, 0);
+  const current = Object.keys(data).reduce((reducer, coin) => {
+    const orderAmount = data[coin].reduce((red, row) => row[2] === 'BUY' ? red + +row[4] : red - +row[4], 0) * (1 - 0.001);
+    console.log(orderAmount);
+    return reducer + (orderAmount * coinsPrice[coin]);
+  }, 0);
+  const diff = fixedNum(current - total, 2);
+
+  return (<Table className={styles.table}>
+      <thead>
+      <tr className={styles.titleRow}>
+        <th>Total Spend</th>
+        <th>Current Value</th>
+        <th>Diff</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr className={classNames(styles.totalRow, { [styles.positive]: diff >= 0, [styles.negative]: diff < 0 })}>
+        <td>{fixedNum(total, 2)}$</td>
+        <td>{fixedNum(current, 2)}$</td>
+        <td>{diff}$</td>
+      </tr>
+      </tbody>
+    </Table>
+  );
+};
 
 export default TotalTable;

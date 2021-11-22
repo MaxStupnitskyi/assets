@@ -1,4 +1,11 @@
-table {
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 900px;
+
   td, th {
     &:first-child {
       width: 240px;
@@ -36,8 +43,8 @@ table {
       width: 100px;
     }
 
-
   }
+
 }
 
 .title th {
