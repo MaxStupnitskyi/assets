@@ -1,9 +1,15 @@
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .table {
-  min-width: 450px;
+  min-width: 351px;
 
   td, th {
     width: 150px;
   }
+
 }
 
 .titleRow {

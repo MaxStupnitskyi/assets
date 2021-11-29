@@ -18,22 +18,24 @@ const TotalTable = ({ data, coinsPrice }) => {
   }, 0);
   const diff = fixedNum(current - total, 2);
 
-  return (<Table className={styles.table}>
-      <thead>
-      <tr className={styles.titleRow}>
-        <th>Total Spend</th>
-        <th>Current Value</th>
-        <th>Diff</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr className={classNames(styles.totalRow, { [styles.positive]: diff >= 0, [styles.negative]: diff < 0 })}>
-        <td>{fixedNum(total, 2)}$</td>
-        <td>{fixedNum(current, 2)}$</td>
-        <td>{diff}$</td>
-      </tr>
-      </tbody>
-    </Table>
+  return (<div className={styles.tableWrapper}>
+      <Table className={styles.table}>
+        <thead>
+        <tr className={styles.titleRow}>
+          <th>Total Spend</th>
+          <th>Current Value</th>
+          <th>Diff</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr className={classNames(styles.totalRow, { [styles.positive]: diff >= 0, [styles.negative]: diff < 0 })}>
+          <td>{fixedNum(total, 2)}$</td>
+          <td>{fixedNum(current, 2)}$</td>
+          <td>{diff}$</td>
+        </tr>
+        </tbody>
+      </Table>
+    </div>
   );
 };
 
