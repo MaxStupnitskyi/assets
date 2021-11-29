@@ -49,11 +49,11 @@ const TableBlock = ({ data, coinsPrice }) => {
             ))}
             <tr className={classNames(styles.totalRow, { [styles.positive]: diff >= 0, [styles.negative]: diff < 0 })}>
               <td>Total</td>
-              <td>{diff || 'Pending...'}</td>
+              <td>{`${diff}$` || 'Pending...'}</td>
               <td>{averagePrice}</td>
-              <td>${total}</td>
+              <td>{total}$</td>
               <td>{fixedNum(coinsPrice[coin], 4) || 'Pending...'}</td>
-              <td>{currentValue || 'Pending...'}</td>
+              <td>{`${currentValue}$` || 'Pending...'}</td>
               <td colSpan={2} />
               <td>{fixedNum(orderAmount, 5)}</td>
             </tr>
