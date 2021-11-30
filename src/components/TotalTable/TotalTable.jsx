@@ -17,6 +17,8 @@ const TotalTable = ({ data, coinsPrice }) => {
     return reducer + (orderAmount * coinsPrice[coin]);
   }, 0);
   const diff = fixedNum(current - total, 2);
+  const percentage = fixedNum(current * 100 / total, 2);
+  const percentDiff = fixedNum(percentage - 100, 2);
 
   return (<div className={styles.tableWrapper}>
       <Table className={styles.table}>
@@ -25,6 +27,7 @@ const TotalTable = ({ data, coinsPrice }) => {
           <th>Total Spend</th>
           <th>Current Value</th>
           <th>Diff</th>
+          <th>%</th>
         </tr>
         </thead>
         <tbody>
@@ -32,6 +35,7 @@ const TotalTable = ({ data, coinsPrice }) => {
           <td>{fixedNum(total, 2)}$</td>
           <td>{fixedNum(current, 2)}$</td>
           <td>{diff}$</td>
+          <td>{percentDiff}%</td>
         </tr>
         </tbody>
       </Table>
