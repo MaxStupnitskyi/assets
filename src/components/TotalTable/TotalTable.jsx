@@ -1,5 +1,4 @@
 import { Table } from 'react-bootstrap';
-import { useState } from 'react';
 
 import fixedNum from '../../helpers/fixedNum';
 
@@ -13,7 +12,6 @@ const TotalTable = ({ data, coinsPrice }) => {
   }, 0);
   const current = Object.keys(data).reduce((reducer, coin) => {
     const orderAmount = data[coin].reduce((red, row) => row[2] === 'BUY' ? red + +row[4] : red - +row[4], 0) * (1 - 0.001);
-    console.log(orderAmount);
     return reducer + (orderAmount * coinsPrice[coin]);
   }, 0);
   const diff = fixedNum(current - total, 2);
@@ -27,15 +25,13 @@ const TotalTable = ({ data, coinsPrice }) => {
           <th>Total Spend</th>
           <th>Current Value</th>
           <th>Diff</th>
-          <th>%</th>
         </tr>
         </thead>
         <tbody>
         <tr className={classNames(styles.totalRow, { [styles.positive]: diff >= 0, [styles.negative]: diff < 0 })}>
           <td>{fixedNum(total, 2)}$</td>
           <td>{fixedNum(current, 2)}$</td>
-          <td>{diff}$</td>
-          <td>{percentDiff}%</td>
+          <td>{diff}$ ({percentDiff}%)</td>
         </tr>
         </tbody>
       </Table>

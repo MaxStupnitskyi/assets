@@ -14,52 +14,40 @@ const TableBlock = ({ data, coinsPrice }) => {
       const total = fixedNum(data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[7] : reducer - +row[7], 0), 2);
       const currentValue = fixedNum(coinsPrice[coin] * orderAmount, 2);
       const diff = fixedNum(currentValue - total, 2);
+      const percentage = fixedNum(currentValue * 100 / total, 2);
+      const percentDiff = fixedNum(percentage - 100, 2);
 
-      return (total >= 1 && <div className={styles.tableWrapper}>
-          <Table className={styles.table} key={coin} variant='dark'>
-            <thead>
-            <tr className={styles.title}>
-              <th colSpan='9'>{coin.slice(0, -4)}</th>
+      return (
+        <Table className={styles.table} variant='dark' key={coin}>
+          <thead>
+          <tr className={classNames(styles.title, { [styles.positive]: diff >= 0, [styles.negative]: diff < 0 })}>
+            <th>{coin.slice(0, -4)}</th>
+            <th colSpan='8'>{diff ? `${diff}$ (${percentDiff}%)` : 'Loading...'}</th>
+          </tr>
+          <tr className={styles.header}>
+            <th>Date</th>
+            <th>Price (current)</th>
+            <th>Total (current)</th>
+            <th>Order Amount (fee)</th>
+          </tr>
+          </thead>
+          <tbody>
+          {data[coin].map(row => (
+            <tr key={row[0]}>
+              <td>{row[0]}</td>
+              <td>{fixedNum(row[5], 4)}</td>
+              <td>${fixedNum(row[7], 2)}</td>
+              <td>{row[4]} ({fixedNum(row[4] - row[4] * (1 - 0.001), 8)})</td>
             </tr>
-            <tr className={styles.header}>
-              <th>Date</th>
-              <th>Diff</th>
-              <th>Price</th>
-              <th>Total</th>
-              <th>Current Price</th>
-              <th>Current Value</th>
-              <th>Type</th>
-              <th>Fee</th>
-              <th>Order Amount</th>
-            </tr>
-            </thead>
-            <tbody>
-            {data[coin].map(row => (
-              <tr key={row[0]}>
-                <td>{row[0]}</td>
-                <td />
-                <td>{fixedNum(row[5], 4)}</td>
-                <td>${fixedNum(row[7], 2)}</td>
-                <td />
-                <td />
-                <td>{row[2]}</td>
-                <td>{fixedNum(row[4] - row[4] * (1 - 0.001), 8)}</td>
-                <td>{row[4]}</td>
-              </tr>
-            ))}
-            <tr className={classNames(styles.totalRow, { [styles.positive]: diff >= 0, [styles.negative]: diff < 0 })}>
-              <td>Total</td>
-              <td>{`${diff}$` || 'Pending...'}</td>
-              <td>{averagePrice}</td>
-              <td>{total}$</td>
-              <td>{fixedNum(coinsPrice[coin], 4) || 'Pending...'}</td>
-              <td>{`${currentValue}$` || 'Pending...'}</td>
-              <td colSpan={2} />
-              <td>{fixedNum(orderAmount, 5)}</td>
-            </tr>
-            </tbody>
-          </Table>
-        </div>
+          ))}
+          <tr className={styles.totalRow}>
+            <td>Total</td>
+            <td>{averagePrice} ({fixedNum(coinsPrice[coin], 4) || 'Loading...'})</td>
+            <td>{total}$ ({`${currentValue}$` || 'Loading...'})</td>
+            <td>{fixedNum(orderAmount, 5)}</td>
+          </tr>
+          </tbody>
+        </Table>
       );
     }
   );
