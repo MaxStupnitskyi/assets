@@ -8,10 +8,10 @@ import classNames from 'classnames';
 const TotalTable = ({ data, coinsPrice }) => {
 
   const total = Object.keys(data).reduce((reducer, coin) => {
-    return reducer + fixedNum(data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[7] : reducer - +row[7], 0), 2);
+    return reducer + fixedNum(data[coin].reduce((reducer, row) => reducer + +row[7], 0), 2);
   }, 0);
   const current = Object.keys(data).reduce((reducer, coin) => {
-    const orderAmount = data[coin].reduce((red, row) => row[2] === 'BUY' ? red + +row[4] : red - +row[4], 0) * (1 - 0.001);
+    const orderAmount = data[coin].reduce((red, row) => red + +row[4], 0) * (1 - 0.001);
     return reducer + (orderAmount * coinsPrice[coin]);
   }, 0);
   const diff = fixedNum(current - total, 2);
