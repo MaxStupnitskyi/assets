@@ -10,7 +10,6 @@ const TableBlock = ({ data, coinsPrice }) => {
   return Object.keys(data).map(coin => {
 
       const orderAmount = data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[4] : reducer - +row[4], 0) * (1 - 0.001);
-      const averagePrice = fixedNum((data[coin].reduce((reducer, row) => row[2] === 'BUY' && reducer + +row[5], 0)) / data[coin].filter(coin => coin[2] === 'BUY').length, 4);
       const total = fixedNum(data[coin].reduce((reducer, row) => row[2] === 'BUY' ? reducer + +row[7] : reducer - +row[7], 0), 2);
       const currentValue = fixedNum(coinsPrice[coin] * orderAmount, 2);
       const diff = fixedNum(currentValue - total, 2);
@@ -42,7 +41,7 @@ const TableBlock = ({ data, coinsPrice }) => {
           ))}
           <tr className={styles.totalRow}>
             <td>Total</td>
-            <td>{fixedNum(total / orderAmount, 5)} ({fixedNum(coinsPrice[coin], 4) || 'Loading...'})</td>
+            <td>{fixedNum(total / orderAmount, 4)} ({fixedNum(coinsPrice[coin], 4) || 'Loading...'})</td>
             <td>{total}$ ({`${currentValue}$` || 'Loading...'})</td>
             <td>{fixedNum(orderAmount, 5)}</td>
           </tr>
