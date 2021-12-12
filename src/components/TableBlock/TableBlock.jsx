@@ -42,7 +42,7 @@ const TableBlock = ({ data, coinsPrice }) => {
           ))}
           <tr className={styles.totalRow}>
             <td>Total</td>
-            <td>{averagePrice} ({fixedNum(coinsPrice[coin], 4) || 'Loading...'})</td>
+            <td>{fixedNum(total / orderAmount, 5)} ({fixedNum(coinsPrice[coin], 4) || 'Loading...'})</td>
             <td>{total}$ ({`${currentValue}$` || 'Loading...'})</td>
             <td>{fixedNum(orderAmount, 5)}</td>
           </tr>
